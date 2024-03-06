@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste de Films</title>
+    <style>
+        /* Style pour les cartes de films */
+        .movie-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: inline-block;
+        }
+        .movie-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .movie-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste de Films</h1>
+    <div id="movieList"></div>
+
+    <script>
+        // Fonction pour récupérer et afficher la liste de films
+        function fetchMovies() {
+            fetch('../movie.manager/rest/movies')
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+
+                const movies = xmlDoc.getElementsByTagName("movie");
+
+                let html = "";
+                for (let i = 0; i < movies.length; i++) {
+                    const movie = movies[i];
+                    const title = movie.getElementsByTagName("title")[0].textContent;
+                    const director = movie.getElementsByTagName("director")[0].textContent;
+                    const duration = movie.getElementsByTagName("duration")[0].textContent;
+                    const language = movie.getElementsByTagName("language")[0].textContent;
+                    const startDate = movie.getElementsByTagName("startDate")[0].textContent;
+                    const endDate = movie.getElementsByTagName("endDate")[0].textContent;
+                    const minimumAgeRequirement = movie.getElementsByTagName("minimumAgeRequirement")[0].textContent;
+                    const actors = Array.from(movie.getElementsByTagName("actor")).map(actor => actor.textContent).join(", ");
+                    const screeningDays = Array.from(movie.getElementsByTagName("ScreeningDay")).map(day => day.textContent).join(", ");
+                    const screeningTimes = Array.from(movie.getElementsByTagName("ScreeningTime")).map(time => time.textContent).join(", ");
+
+                    // Construction d'une card
+                    html += `
+                        <div class="movie-card">
+                            <div class="movie-title">${title}</div>
+                            <div class="movie-details">
+                                <strong>Director:</strong> ${director}<br>
+                                <strong>Duration:</strong> ${duration} minutes<br>
+                                <strong>Language:</strong> ${language}<br>
+                                <strong>Start Date:</strong> ${startDate}<br>
+                                <strong>End Date:</strong> ${endDate}<br>
+                                <strong>Minimum Age Requirement:</strong> ${minimumAgeRequirement}<br>
+                                <strong>Actors:</strong> ${actors}<br>
+                                <strong>Screening Days:</strong> ${screeningDays}<br>
+                                <strong>Screening Times:</strong> ${screeningTimes}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                document.getElementById("movieList").innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching movies:', error);
+            });
+        }
+        
+        fetchMovies();
+    </script>
+</body>
+</html>

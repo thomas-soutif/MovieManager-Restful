@@ -68,7 +68,7 @@ public class MoviesResource extends GenericExceptionMapper {
     	Movie movie = new Movie(title, duration, language, director,actors, minimumAgeRequirement);
     	movie.setProjectionPeriod(startDate, endDate, screeningDays, screeningTimes);
     	MovieDao.instance.addFilm(movie);
-    	servletResponse.sendRedirect("../rest/movies");
+    	servletResponse.sendRedirect("../list_movie.html");
    }
     
     @Path("{movie}")
