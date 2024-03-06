@@ -46,7 +46,31 @@ public class MoviesResource extends GenericExceptionMapper {
         return MovieDao.instance.getAllFilms();
 	}
     
-
+    @POST
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void newMovie(
+                         @FormParam("title") String title,
+                         @FormParam("duration") int duration,
+                         @FormParam("language") String language,
+                         @FormParam("director") String director,
+                         @FormParam("actors") String actorsList,
+                         @FormParam("minimumAgeRequirement") int minimumAgeRequirement,
+                         @FormParam("startDate") String startDate,
+                         @FormParam("endDate") String endDate,
+                         @FormParam("screeningDays") String screeningDaysList,
+                         @FormParam("screeningTime") String screeningTimeList,
+                         @Context HttpServletResponse servletResponse) throws IOException {
+    	String[] actors = actorsList.split(",");
+    	String[] screeningDays = screeningDaysList.split(",");
+    	String[] screeningTimes = screeningTimeList.split(",");
+    	
+    	Movie movie = new Movie(title, duration, language, director,actors, minimumAgeRequirement);
+    	movie.setProjectionPeriod(startDate, endDate, screeningDays, screeningTimes);
+    	MovieDao.instance.addFilm(movie);
+    	servletResponse.sendRedirect("../rest/movies");
+   }
+    
     @Path("{movie}")
     public MovieResource getFilm(@PathParam("movie") String titre) {
         return new MovieResource(uriInfo, request, titre);

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form to create a new film</title>
+</head>
+<body>
+    <h2>Add a new film</h2>
+    <form action="../movie.manager/rest/movies" method="POST">
+        
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br><br>
+        
+        <label for="duration">Duration (minutes):</label>
+        <input type="number" id="duration" name="duration" required><br><br>
+        
+        <label for="language">Language:</label>
+        <input type="text" id="language" name="language" required><br><br>
+        
+        <label for="director">Director:</label>
+        <input type="text" id="director" name="director" required><br><br>
+        
+        <label for="actors">Actors (separate by comma):</label>
+        <input type="text" id="actors" name="actors" required><br><br>
+        
+        <label for="minimumAgeRequirement">Minimum Age Requirement:</label>
+        <input type="number" id="minimumAgeRequirement" name="minimumAgeRequirement" required><br><br>
+        
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required><br><br>
+        
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required><br><br>
+        
+        <label for="screeningDays">Screening Days (separate by comma):</label>
+        <input type="text" id="screeningDays" name="screeningDays" required><br><br>
+        
+        <label for="screeningTime">Screening Time:</label>
+        <input type="text" id="screeningTime" name="screeningTime" required><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
