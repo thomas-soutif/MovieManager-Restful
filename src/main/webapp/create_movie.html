@@ -2,40 +2,96 @@
 <html>
 <head>
     <title>Form to create a new film</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: calc(100% - 10px);
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>Add a new film</h2>
     <form action="../movie.manager/rest/movies" method="POST">
+        <h2>Add a new film</h2>
         
         <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required><br><br>
+        <input type="text" id="title" name="title" required>
         
         <label for="duration">Duration (minutes):</label>
-        <input type="number" id="duration" name="duration" required><br><br>
+        <input type="number" id="duration" name="duration" required>
         
         <label for="language">Language:</label>
-        <input type="text" id="language" name="language" required><br><br>
+        <input type="text" id="language" name="language" required>
         
         <label for="director">Director:</label>
-        <input type="text" id="director" name="director" required><br><br>
+        <input type="text" id="director" name="director" required>
         
         <label for="actors">Actors (separate by comma):</label>
-        <input type="text" id="actors" name="actors" required><br><br>
+        <input type="text" id="actors" name="actors" required>
         
         <label for="minimumAgeRequirement">Minimum Age Requirement:</label>
-        <input type="number" id="minimumAgeRequirement" name="minimumAgeRequirement" required><br><br>
+        <input type="number" id="minimumAgeRequirement" name="minimumAgeRequirement" required>
         
         <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" required><br><br>
+        <input type="date" id="startDate" name="startDate" required>
         
         <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" required><br><br>
+        <input type="date" id="endDate" name="endDate" required>
         
         <label for="screeningDays">Screening Days (separate by comma):</label>
-        <input type="text" id="screeningDays" name="screeningDays" required><br><br>
+        <input type="text" id="screeningDays" name="screeningDays" required>
         
         <label for="screeningTime">Screening Time:</label>
-        <input type="text" id="screeningTime" name="screeningTime" required><br><br>
+        <input type="text" id="screeningTime" name="screeningTime" required>
         
         <input type="submit" value="Submit">
     </form>
