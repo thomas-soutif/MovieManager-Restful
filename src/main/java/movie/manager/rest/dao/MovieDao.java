@@ -14,14 +14,14 @@ public enum MovieDao {
 
     private MovieDao() {
         // Initialisation des films (à titre d'exemple)
-    	Movie film1 = new Movie("Interstellar", "Interstellar", 169, "Anglais", "Christopher Nolan", 
+    	Movie film1 = new Movie("Interstellar", 169, "Anglais", "Christopher Nolan", 
                                 new String[]{"Matthew McConaughey", "Anne Hathaway"}, 12);
-        film1.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Vendredi"}, "19:00");
+        film1.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Vendredi"},new String[]{"19:00"});
         contentProvider.put("Interstellar", film1);
 
-        Movie film2 = new Movie("Inception", "Inception", 148, "Anglais", "Christopher Nolan", 
+        Movie film2 = new Movie("Inception", 148, "Anglais", "Christopher Nolan", 
                                 new String[]{"Leonardo DiCaprio", "Ellen Page"}, 12);
-        film2.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Mardi"},"15:00");
+        film2.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Mardi"},new String[]{"15:00", "16:00"});
         contentProvider.put("Inception", film2);
         
     }
