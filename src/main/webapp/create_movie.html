@@ -1,99 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Form to create a new film</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Film</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .menu {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="date"] {
-            width: calc(100% - 10px);
-            padding: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        input[type="submit"] {
-            background-color: #007bff;
+            justify-content: space-between;
+            background-color: #333;
             color: #fff;
-            border: none;
-            border-radius: 3px;
+            padding: 10px;
+        }
+
+        .menu-item {
             padding: 10px 20px;
-            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
             transition: background-color 0.3s;
         }
 
-        input[type="submit"]:hover {
+        .menu-item:hover {
+            background-color: #555;
+        }
+
+        .menu-item.active {
+            background-color: #555;
+        }
+
+       .form-container {
+            width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-row label {
+            flex: 0 0 45%;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .form-row input, .form-row select {
+            flex: 0 0 50%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-row input[type="submit"] {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-row input[type="submit"]:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+    <div class="menu">
+        <a href="/movie.manager/" class="menu-item">Accueil</a>
+        <a href="/movie.manager/list_movie.html" class="menu-item">Liste des Films</a>
+        <a href="/movie.manager/create_movie.html" class="menu-item active">Ajouter un Film</a>
+        <a href="#" class="menu-item">Se Connecter</a>
+        <a href="#" class="menu-item">S'Inscrire</a>
+    </div>
+
+    <div class="form-container">
+    <h2>Ajouter un Film</h2>
     <form action="../movie.manager/rest/movies" method="POST">
-        <h2>Add a new film</h2>
-        
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-        
-        <label for="duration">Duration (minutes):</label>
-        <input type="number" id="duration" name="duration" required>
-        
-        <label for="language">Language:</label>
-        <input type="text" id="language" name="language" required>
-        
-        <label for="director">Director:</label>
-        <input type="text" id="director" name="director" required>
-        
-        <label for="actors">Actors (separate by comma):</label>
-        <input type="text" id="actors" name="actors" required>
-        
-        <label for="minimumAgeRequirement">Minimum Age Requirement:</label>
-        <input type="number" id="minimumAgeRequirement" name="minimumAgeRequirement" required>
-        
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" required>
-        
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" required>
-        
-        <label for="screeningDays">Screening Days (separate by comma):</label>
-        <input type="text" id="screeningDays" name="screeningDays" required>
-        
-        <label for="screeningTime">Screening Time:</label>
-        <input type="text" id="screeningTime" name="screeningTime" required>
-        
-        <input type="submit" value="Submit">
+        <div class="form-row">
+            <label for="title">Titre:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-row">
+            <label for="duration">Durée (minutes):</label>
+            <input type="number" id="duration" name="duration" required>
+        </div>
+        <div class="form-row">
+            <label for="language">Langue:</label>
+            <input type="text" id="language" name="language" required>
+        </div>
+        <div class="form-row">
+            <label for="director">Réalisateur:</label>
+            <input type="text" id="director" name="director" required>
+        </div>
+        <div class="form-row">
+            <label for="actors">Acteurs:</label>
+            <input type="text" id="actors" name="actors" required>
+        </div>
+        <div class="form-row">
+            <label for="minimumAgeRequirement">Âge minimum requis:</label>
+            <input type="number" id="minimumAgeRequirement" name="minimumAgeRequirement" required>
+        </div>
+        <div class="form-row">
+            <label for="startDate">Date de début:</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+        <div class="form-row">
+            <label for="endDate">Date de fin:</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        <div class="form-row">
+            <label for="screeningDays">Jours de projection:</label>
+            <input type="text" id="screeningDays" name="screeningDays" required>
+        </div>
+        <div class="form-row">
+            <label for="screeningTime">Horaire de projection:</label>
+            <input type="text" id="screeningTime" name="screeningTime" required>
+        </div>
+        <div class="form-row">
+            <input type="submit" value="Ajouter Film">
+        </div>
     </form>
+</div>
 </body>
 </html>

@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste de Films</title>
     <style>
+    	body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .menu-item:hover {
+            background-color: #555;
+        }
+
+        .menu-item.active {
+            background-color: #555;
+        }
         /* Style pour les cartes de films */
         .movie-card {
             border: 1px solid #ccc;
@@ -25,10 +51,58 @@
             color: #666;
             font-size: 0.9em;
         }
+        
+        /* Style pour le formulaire de recherche */
+        .search-form {
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 300px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+	<div class="menu">
+        <a href="/movie.manager/" class="menu-item">Accueil</a>
+        <a href="/movie.manager/list_movie.html" class="menu-item active">Liste des Films</a>
+        <a href="/movie.manager/create_movie.html" class="menu-item">Ajouter un Film</a>
+        <a href="#" class="menu-item">Se Connecter</a>
+        <a href="#" class="menu-item">S'Inscrire</a>
+    </div>
     <h1>Liste de Films</h1>
+    
+    <!-- Formulaire de recherche -->
+    <form class="search-form">
+        <label for="search">Recherche:</label>
+        <input type="text" id="search" class="search-input" placeholder="Entrez la valeur que vous recherchez">
+        <label for="filter">Filtrer par:</label>
+        <select id="filter" class="search-input">
+            <option value="title">Titre</option>
+            <option value="director">Réalisateur</option>
+            <option value="startDate">Date de début</option>
+            <option value="endDate">Date de fin</option>
+            <option value="language"> Langue </option>
+            <!-- Ajoutez d'autres options de filtrage ici -->
+        </select>
+        
+    </form>
+    
     <div id="movieList"></div>
 
     <script>
@@ -58,7 +132,7 @@
 
                     // Construction d'une card
                     html += `
-                        <div class="movie-card">
+                        <div class="movie-card" data-title="${title}" data-director="${director}" data-startDate="${startDate}" data-endDate="${endDate}" data-language="${language}">
                             <div class="movie-title">${title}</div>
                             <div class="movie-details">
                                 <strong>Director:</strong> ${director}<br>
@@ -82,7 +156,33 @@
             });
         }
         
+        function filterMovies() {
+        	console.log("hdey")
+            var searchValue = document.getElementById("search").value.toLowerCase();
+            var filterValue = document.getElementById("filter").value;
+
+            var movies = document.getElementsByClassName("movie-card");
+
+            for (var i = 0; i < movies.length; i++) {
+                var movie = movies[i];
+                var fieldValue = movie.getAttribute("data-" + filterValue).toLowerCase();
+                if (fieldValue.indexOf(searchValue) > -1) {
+                    movie.style.display = "";
+                } else {
+                    movie.style.display = "none";
+                }
+            }
+        }
+        
         fetchMovies();
+        
+        document.getElementById("search").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            filterMovies();
+        });
+        document.getElementById("filter").addEventListener("change", function() {
+            filterMovies();
+        });
     </script>
 </body>
 </html>

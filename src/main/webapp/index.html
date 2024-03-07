@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Film</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .menu-item:hover {
+            background-color: #555;
+        }
+
+        .menu-item.active {
+            background-color: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="/movie.manager/" class="menu-item active">Accueil</a>
+        <a href="/movie.manager/list_movie.html" class="menu-item">Liste des Films</a>
+        <a href="/movie.manager/create_movie.html" class="menu-item">Ajouter un Film</a>
+        <a href="#" class="menu-item">Se Connecter</a>
+        <a href="#" class="menu-item">S'Inscrire</a>
+    </div>
+</body>
+</html>
