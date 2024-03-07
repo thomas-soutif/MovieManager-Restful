@@ -95,14 +95,17 @@ public class UsersResource extends GenericExceptionMapper {
             String cookie = CookieGenerator.generateUniqueCookie();
 
             // Stockez le cookie dans l'objet User
-            user.setCookie(cookie);
+            user.setCookie(cookie.toString());
 
             // Enregistrez le cookie dans le navigateur de l'utilisateur
             Cookie cookie_obj = new Cookie("movie.manager.Cookie", cookie.toString());
-            servletResponse.addCookie(cookie_obj);
-            NewCookie newCookie = new NewCookie("movie.manager.Cookie", cookie.toString());
-            // Redirigez l'utilisateur vers une page sécurisée
+            //servletResponse.addCookie(cookie_obj);
+            //NewCookie newCookie = new NewCookie("movie.manager.Cookie", cookie.toString());
+            NewCookie newCookie = new NewCookie("movie.manager.Cookie", cookie.toString(), "/", null, NewCookie.DEFAULT_VERSION, null, NewCookie.DEFAULT_MAX_AGE, null, false, true);
             return Response.ok().cookie(newCookie).build();
+
+            // Redirigez l'utilisateur vers une page sécurisée
+            //return Response.ok().cookie(newCookie).build();
             
         } else {
             // Gestion des erreurs de connexion

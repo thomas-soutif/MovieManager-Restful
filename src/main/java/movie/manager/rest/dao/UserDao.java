@@ -29,7 +29,6 @@ public enum UserDao {
     public User getUser(String username) {
         return userDatabase.get(username);
     }
-
     public void addUser(User user) {
         userDatabase.put(user.getUsername(), user);
     }
@@ -47,5 +46,15 @@ public enum UserDao {
         users.addAll(instance.getModel().values());
         return users;
     }
+    
+    public User getUserFromCookie(String value) {
+        for (User user : getAllUsers()) {
+            if (user.getCookie() != null && user.getCookie().equals(value)) {
+                return user; // Retourner l'utilisateur si le cookie correspond
+            }
+        }
+        return null;
+    }
+
 
 }

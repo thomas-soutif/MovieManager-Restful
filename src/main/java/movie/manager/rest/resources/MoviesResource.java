@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -15,11 +16,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import movie.manager.rest.auth.CookieService;
 import movie.manager.rest.dao.MovieDao;
 import movie.manager.rest.exception.GenericExceptionMapper;
 import movie.manager.rest.model.Movie;
+import movie.manager.rest.model.User;
 
 
 @Path("/movies")
@@ -49,7 +53,7 @@ public class MoviesResource extends GenericExceptionMapper {
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void newMovie(
+    public Response newMovie(
                          @FormParam("title") String title,
                          @FormParam("duration") int duration,
                          @FormParam("language") String language,
@@ -60,15 +64,26 @@ public class MoviesResource extends GenericExceptionMapper {
                          @FormParam("endDate") String endDate,
                          @FormParam("screeningDays") String screeningDaysList,
                          @FormParam("screeningTime") String screeningTimeList,
+                         @Context HttpServletRequest request,
                          @Context HttpServletResponse servletResponse) throws IOException {
     	String[] actors = actorsList.split(",");
     	String[] screeningDays = screeningDaysList.split(",");
     	String[] screeningTimes = screeningTimeList.split(",");
     	
+    	User user = CookieService.getUserFromCookie(request);
+    	
+		// Vérification des droits de l'utilisateur
+        if (user == null || (user.getRole() != User.Role.STAFF && user.getRole() != User.Role.PROVIDER)) {
+            // Pas les droits nécessaires
+        	servletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        	return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
     	Movie movie = new Movie(title, duration, language, director,actors, minimumAgeRequirement);
     	movie.setProjectionPeriod(startDate, endDate, screeningDays, screeningTimes);
     	MovieDao.instance.addFilm(movie);
     	servletResponse.sendRedirect("../list_movie.html");
+    	return Response.ok().build();
    }
     
     @Path("{movie}")
