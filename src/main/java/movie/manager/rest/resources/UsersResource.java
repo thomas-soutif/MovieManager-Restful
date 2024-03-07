@@ -76,7 +76,7 @@ public class UsersResource extends GenericExceptionMapper {
     }
     
     @Path("{user}")
-    public UserResource getFilm(@PathParam("user") String username) {
+    public UserResource getUser(@PathParam("user") String username) {
         return new UserResource(uriInfo, request, username);
     }
 
