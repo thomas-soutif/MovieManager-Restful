@@ -13,17 +13,17 @@ public enum UserDao {
     private Map<String, User> userDatabase = new HashMap<>();
 
     private UserDao() {
-        User user1 = new User("user1", "password1");
+        User user1 = new User("staff", "staff");
         user1.setRole(User.Role.STAFF);
-        userDatabase.put("user1", user1);
+        userDatabase.put("staff", user1);
 
-        User user2 = new User("user2", "password2");
+        User user2 = new User("provider", "provider");
         user2.setRole(User.Role.PROVIDER);
-        userDatabase.put("user2", user2);
+        userDatabase.put("provider", user2);
 
-        User user3 = new User("user3", "password3");
+        User user3 = new User("member", "member");
         user3.setRole(User.Role.MEMBER);
-        userDatabase.put("user3", user3);
+        userDatabase.put("member", user3);
     }
 
     public User getUser(String username) {
