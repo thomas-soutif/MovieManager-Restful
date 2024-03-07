@@ -8,6 +8,7 @@ public class User {
     private String password;
     private boolean isConnected;
     private Role role;
+    private String cookie;
     
     public User() {
     	
@@ -42,7 +43,14 @@ public class User {
     public void setUsername(String username) {
     	this.username = username;
     }
-
+    
+    public void setCookie(String cookie) {
+    	this.cookie = cookie;
+    }
+    
+    public String getPassword() {
+    	return password;
+    }
 
     // Enumération pour les rôles des utilisateurs
     public enum Role {
