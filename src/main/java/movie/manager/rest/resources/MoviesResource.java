@@ -50,6 +50,20 @@ public class MoviesResource extends GenericExceptionMapper {
         return MovieDao.instance.getAllFilms();
 	}
     
+    @GET
+    @Path("canPostMovie")
+    @Produces(MediaType.TEXT_HTML)
+    public Response canPostMovie(
+    		@Context HttpServletRequest request) throws IOException {
+    		
+    	User user = CookieService.getUserFromCookie(request);
+    	// Vérification des droits de l'utilisateur
+        if (user == null || (user.getRole() != User.Role.STAFF && user.getRole() != User.Role.PROVIDER)) {
+            // Pas les droits nécessaires
+        	return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.ok().build();
+    }
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
