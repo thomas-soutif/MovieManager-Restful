@@ -133,7 +133,7 @@
                     // Construction d'une card
                     html += `
                         <div class="movie-card" data-title="${title}" data-director="${director}" data-startDate="${startDate}" data-endDate="${endDate}" data-language="${language}">
-                            <div class="movie-title">${title}</div>
+                            <div class="movie-title"><a href="/movie.manager/detail.html?id=${title}">${title}</a></div>
                             <div class="movie-details">
                                 <strong>Director:</strong> ${director}<br>
                                 <strong>Duration:</strong> ${duration} minutes<br>
