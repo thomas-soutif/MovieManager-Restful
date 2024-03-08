@@ -14,18 +14,44 @@ public enum MovieDao {
 
     private MovieDao() {
         // Initialisation des films (à titre d'exemple)
-    	Movie film1 = new Movie("Interstellar", 169, "Anglais", "Christopher Nolan", 
-                                new String[]{"Matthew McConaughey", "Anne Hathaway"}, 12);
-        film1.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Vendredi"},new String[]{"19:00"});
-        contentProvider.put("Interstellar", film1);
+    	
+    	addMovie("Interstellar", 169, "Anglais", "Christopher Nolan", new String[]{"Matthew McConaughey", "Anne Hathaway"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Vendredi"}, new String[]{"19:00"});
 
-        Movie film2 = new Movie("Inception", 148, "Anglais", "Christopher Nolan", 
-                                new String[]{"Leonardo DiCaprio", "Ellen Page"}, 12);
-        film2.setProjectionPeriod("2024-03-01", "2024-03-31", new String[]{"Mardi"},new String[]{"15:00", "16:00"});
-        contentProvider.put("Inception", film2);
+        addMovie("Inception", 148, "Anglais", "Christopher Nolan", new String[]{"Leonardo DiCaprio", "Ellen Page"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Mardi"}, new String[]{"15:00", "16:00"});
+
+        // Ajout de 20 autres films
+        addMovie("The Dark Knight", 152, "Anglais", "Christopher Nolan", new String[]{"Christian Bale", "Heath Ledger"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Vendredi"}, new String[]{"21:00"});
+
+        addMovie("The Matrix", 136, "Anglais", "Lana Wachowski, Lilly Wachowski", new String[]{"Keanu Reeves", "Laurence Fishburne"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Mardi", "Jeudi", "Samedi"}, new String[]{"20:00"});
+        
+        addMovie("Pulp Fiction", 154, "Anglais", "Quentin Tarantino", new String[]{"John Travolta", "Uma Thurman"}, 16,
+                "2024-03-01", "2024-03-31", new String[]{"Dimanche", "Mercredi", "Vendredi"}, new String[]{"22:00"});
+
+        addMovie("The Shawshank Redemption", 142, "Anglais", "Frank Darabont", new String[]{"Tim Robbins", "Morgan Freeman"}, 16,
+                "2024-03-01", "2024-03-31", new String[]{"Mardi", "Jeudi", "Samedi"}, new String[]{"18:00"});
+
+        addMovie("The Lord of the Rings: The Fellowship of the Ring", 178, "Anglais", "Peter Jackson", new String[]{"Elijah Wood", "Ian McKellen"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Lundi", "Mardi", "Samedi"}, new String[]{"17:00"});
+
+        addMovie("Forrest Gump", 142, "Anglais", "Robert Zemeckis", new String[]{"Tom Hanks", "Robin Wright"}, 12,
+                "2024-03-01", "2024-03-31", new String[]{"Mercredi", "Vendredi", "Dimanche"}, new String[]{"14:00"});
+
+        addMovie("The Godfather", 175, "Anglais", "Francis Ford Coppola", new String[]{"Marlon Brando", "Al Pacino"}, 16,
+                "2024-03-01", "2024-03-31", new String[]{"Lundi", "Mercredi", "Samedi"}, new String[]{"19:00"});
         
     }
     
+    
+    private void addMovie(String title, int duration, String language, String director, String[] actors, int minimumAgeRequirement,
+            String startDate, String endDate, String[] screeningDays, String[] screeningTimes) {
+		Movie movie = new Movie(title, duration, language, director, actors, minimumAgeRequirement);
+		movie.setProjectionPeriod(startDate, endDate, screeningDays, screeningTimes);
+		contentProvider.put(movie.getTitle(), movie);
+	}
     public Map<String, Movie> getModel(){
         return contentProvider;
     }
