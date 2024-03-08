@@ -2,9 +2,15 @@ package movie.manager.rest.resources;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.json.JsonObject;
+import javax.json.Json;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -21,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import movie.manager.rest.auth.CookieGenerator;
+import movie.manager.rest.auth.CookieService;
 import movie.manager.rest.dao.UserDao;
 import movie.manager.rest.exception.GenericExceptionMapper;
 import movie.manager.rest.model.User;
@@ -79,6 +86,29 @@ public class UsersResource extends GenericExceptionMapper {
         servletResponse.sendRedirect("../login.html");
     }
     
+    @GET
+    @Path("is_login")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response isLoginUser(
+    		@Context HttpServletRequest servletRequest,
+            @Context HttpServletResponse servletResponse) throws IOException {
+    		
+        	User user = CookieService.getUserFromCookie(servletRequest);
+        	ObjectMapper objectMapper = new ObjectMapper();
+        	Map<String, Object> jsonResponse = new HashMap<>();
+            if (user == null || !user.isConnected()) {
+                // Pas connecté
+            	jsonResponse.put("connected", false);
+            } else {
+                // Connecté
+            	jsonResponse.put("connected", true);
+            	jsonResponse.put("username", user.getUsername());
+            }
+            String json = objectMapper.writeValueAsString(jsonResponse);
+            return Response.ok(json).build();
+    }
+    
     @POST
     @Path("login")
     @Produces(MediaType.TEXT_HTML)
@@ -113,6 +143,20 @@ public class UsersResource extends GenericExceptionMapper {
         }
     }
 
+    @GET
+    @Path("disconnect")
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void disconnectUser(
+    		@Context HttpServletRequest servletRequest,
+            @Context HttpServletResponse servletResponse) throws IOException {
+    		
+        	User user = CookieService.getUserFromCookie(servletRequest);
+            if (user != null && user.isConnected()) {
+               user.disconnect();
+            }
+            servletResponse.sendRedirect("/movie.manager/");
+    }
     
     @Path("{user}")
     public UserResource getUser(@PathParam("user") String username) {

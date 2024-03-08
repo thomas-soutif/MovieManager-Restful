@@ -1,7 +1,5 @@
 package movie.manager.rest.auth;
 
-import java.io.Console;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +8,7 @@ import movie.manager.rest.model.User;
 
 public class CookieService {
 	
-	private String cookieName = "movie.manager.Cookie";
+	private static String cookieName = "movie.manager.Cookie";
 	
 	public static User getUserFromCookie(HttpServletRequest request) {
 		 Cookie[] cookies = request.getCookies();
@@ -19,7 +17,7 @@ public class CookieService {
 		    // Recherche du cookie utilisateur
 		    if (cookies != null) {
 		        for (Cookie cookie : cookies) {
-		            if ("movie.manager.Cookie".equals(cookie.getName())) {
+		            if (cookieName.equals(cookie.getName())) {
 		                userCookie = cookie.getValue();
 		                break;
 		            }

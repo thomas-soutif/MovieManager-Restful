@@ -27,6 +27,7 @@ public class User {
 
     public void disconnect() {
         isConnected = false;
+        cookie = null;
     }
 
     public Role getRole() {
@@ -48,6 +49,7 @@ public class User {
     	return cookie;
     }
     public void setCookie(String cookie) {
+    	this.isConnected = true;
     	this.cookie = cookie;
     }
     
@@ -60,6 +62,10 @@ public class User {
         STAFF,
         PROVIDER,
         MEMBER
+    }
+    
+    public Boolean isConnected() {
+    	return isConnected;
     }
 
 }
