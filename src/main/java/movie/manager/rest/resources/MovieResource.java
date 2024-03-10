@@ -1,5 +1,7 @@
 package movie.manager.rest.resources;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,8 +14,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBElement;
 
+import movie.manager.rest.auth.CookieService;
 import movie.manager.rest.dao.MovieDao;
 import movie.manager.rest.model.Movie;
+import movie.manager.rest.model.User;
 
 public class MovieResource {
 	@Context
@@ -57,10 +61,21 @@ public class MovieResource {
     }
     
     @DELETE
-    public void deleteFilm() {
+    public Response deleteFilm(@Context HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    	
+    	User user = CookieService.getUserFromCookie(servletRequest);
+    	
+		// Vérification des droits de l'utilisateur
+        if (user == null || user.getRole() != User.Role.STAFF) {
+            // Pas les droits nécessaires
+        	//servletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        	return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
         Movie c = MovieDao.instance.getModel().remove(title);
         if(c==null)
             throw new RuntimeException("Delete: Todo with " + title +  " not found");
+        return Response.ok().build();
     }
 
     private Response putAndGetResponse(Movie movie) {

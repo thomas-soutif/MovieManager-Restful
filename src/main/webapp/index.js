@@ -8,7 +8,7 @@ function updateMenu(isConnected,username) {
         { href: '/movie.manager/', text: 'Accueil', active: true },
         { href: '/movie.manager/list_movie.html', text: 'Liste des Films' },
         { href: '/movie.manager/create_movie.html', text: 'Ajouter un Film' },
-        { href: isConnected ? '#' : '/movie.manager/login_form.html', text: isConnected ? "Connecté en tant que " + username : 'Se Connecter' },
+        { href: isConnected ? (username == 'staff' ? '/movie.manager/admin.html' : '#') : '/movie.manager/login_form.html', text: isConnected ? "Connecté en tant que " + username : 'Se Connecter' },
         { href: isConnected ? '/movie.manager/rest/users/disconnect' : '#', text: isConnected ? "Déconnexion" : '' }
     ];
     
