@@ -31,6 +31,7 @@ import movie.manager.rest.auth.CookieService;
 import movie.manager.rest.dao.UserDao;
 import movie.manager.rest.exception.GenericExceptionMapper;
 import movie.manager.rest.model.User;
+import movie.manager.rest.model.UsersListWrapper;
 
 @Path("/users")
 public class UsersResource extends GenericExceptionMapper {
@@ -45,15 +46,30 @@ public class UsersResource extends GenericExceptionMapper {
     // Return the list of users to the user in the browser
     @GET
     @Produces({MediaType.TEXT_XML})
-    public List<User> getUsersBrowser() {
-        return UserDao.instance.getAllUsers();
+    public Response getUsersBrowser(
+    		@Context HttpServletRequest servletRequest) {
+        
+    	User user = CookieService.getUserFromCookie(servletRequest);
+    	if (user == null || user.getRole() != User.Role.STAFF) {
+            // Pas les droits nécessaires
+        	return Response.status(Response.Status.FORBIDDEN).build();
+        }
+    	UsersListWrapper usersWrapper = new UsersListWrapper(UserDao.instance.getAllUsers());
+    	return Response.ok(usersWrapper).build();
     }
     
     // Return the list of movies for applications
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public List<User> getUsers() {
-    	return UserDao.instance.getAllUsers();
+    public Response getUsers(@Context HttpServletRequest servletRequest) {
+
+    	User user = CookieService.getUserFromCookie(servletRequest);
+    	if (user == null || user.getRole() != User.Role.STAFF) {
+            // Pas les droits nécessaires
+        	return Response.status(Response.Status.FORBIDDEN).build();
+        }
+    	UsersListWrapper usersWrapper = new UsersListWrapper(UserDao.instance.getAllUsers());
+    	return Response.ok(usersWrapper).build();
 	}
     
     @POST
