@@ -25,7 +25,6 @@ public class CookieService {
 		    }
 		    
 		    if (userCookie != null) {
-		        // Construire l'utilisateur associé au cookie (vous devrez implémenter cette partie)
 		        User user = UserDao.instance.getUserFromCookie(userCookie);
 		        return user;
 		    }
