@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter un Film</title>
+    <script src="jquery-3.7.1.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -98,12 +99,13 @@
 
     <div id="addMovieForm" class="form-container">
     <h2>Ajouter un Film</h2>
-    <form action="../movie.manager/rest/movies" method="POST">
+    <form id="movieForm" action="../movie.manager/rest/movies" method="POST">
+        
         <div class="form-row">
             <label for="title">Titre:</label>
             <input type="text" id="title" name="title" required>
         </div>
-        <div class="form-row">
+         <div class="form-row">
             <label for="duration">Durée (minutes):</label>
             <input type="number" id="duration" name="duration" required>
         </div>
@@ -176,6 +178,36 @@
 
         // Appel de la fonction au chargement de la page
         window.addEventListener('load', checkPermission);
+        
+        $(document).ready(function() {
+            $('#movieForm').submit(function(event) {
+                // Empêcher le comportement par défaut du formulaire qui est de recharger la page
+                event.preventDefault();
+                var formData = $(this).serialize();
+                const jwt = localStorage.getItem('jwt');
+        		let headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        		if (jwt) {
+        	    	// Inclure le JWT dans l'en-tête Authorization
+        	    	headers.Authorization = `Bearer ${jwt}`;
+        		}
+                $.ajax({
+                    type: 'POST',
+                    headers : headers,
+                    url: '../movie.manager/rest/movies',
+                    data: formData,
+                    success: function(response) {
+                        // Traiter la réponse de la requête
+                        console.log('Requête réussie:', response);
+                        window.location.href = "../movie.manager/list_movie.html"; // Redirection vers la page d'accueil en cas de succès
+                    },
+                    error: function(xhr, status, error) {
+                        // Gérer les erreurs de la requête
+                        console.error('Erreur lors de la requête:', error);
+                    }
+                });
+                
+            });
+        });
     </script>
     <script src="index.js"></script>
 </body>
