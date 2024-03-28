@@ -9,7 +9,7 @@ function updateMenu(isConnected,username) {
         { href: '/movie.manager/list_movie.html', text: 'Liste des Films' },
         { href: '/movie.manager/create_movie.html', text: 'Ajouter un Film' },
         { href: isConnected ? (username == 'staff' ? '/movie.manager/admin.html' : '#') : '/movie.manager/login_form.html', text: isConnected ? "Connecté en tant que " + username : 'Se Connecter' },
-        { href: isConnected ? '/movie.manager/rest/users/disconnect' : '#', text: isConnected ? "Déconnexion" : '' }
+        { href: isConnected ? '#' : '#', text: isConnected ? "Déconnexion" : '', id:"disconnectLink" }
     ];
     
 	links.forEach(link => {
@@ -21,13 +21,32 @@ function updateMenu(isConnected,username) {
         if (link.active) {
             menuItem.classList.add('active');
         }
+        if (link.id){
+			menuItem.id = link.id
+		}
         menu.appendChild(menuItem);
     });
+    const disconnectLink = document.getElementById('disconnectLink');
+	console.log(disconnectLink);
+	if (disconnectLink) {
+    	disconnectLink.addEventListener('click', handleDisconnectClick);
+	}
 }
         
 
  function checkLoginStatus() {
-    fetch("../movie.manager/rest/users/is_login")
+	 
+	 // Récupérer le JWT depuis le stockage local
+	const jwt = localStorage.getItem('jwt');
+	let headers = {"Content-Type": "application/x-www-form-urlencoded"};
+	if (jwt) {
+    	// Inclure le JWT dans l'en-tête Authorization
+    	headers.Authorization = `Bearer ${jwt}`;
+	}
+    fetch("../movie.manager/rest/users/is_login",{
+		method:"GET",
+		headers: headers
+	})
         .then(response => {
             if (!response.ok) {
                 throw new Error("Impossible de vérifier l'état de connexion.");
@@ -45,4 +64,33 @@ function updateMenu(isConnected,username) {
         });
 }
 
+function handleDisconnectClick(event) {
+    event.preventDefault();
+    // Récupérer le JWT depuis le stockage local
+    const jwt = localStorage.getItem('jwt');
+    let headers = {"Content-Type": "application/x-www-form-urlencoded"};
+	if (jwt) {
+    	// Inclure le JWT dans l'en-tête Authorization
+    	headers.Authorization = `Bearer ${jwt}`;
+	}
+	
+	fetch("../movie.manager/rest/users/disconnect",{
+		method:"GET",
+		headers: headers
+	})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Impossible de vérifier la bonne déconnexion");
+            }
+            return response.json();
+        })
+        .then(data => {
+            localStorage.removeItem('jwt');
+        })
+        .catch(error => {
+            console.error(error);
+        });
+	
+    window.location.href = '/movie.manager/'
+}
 window.addEventListener('load', checkLoginStatus);

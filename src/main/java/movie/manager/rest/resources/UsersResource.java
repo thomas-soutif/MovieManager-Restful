@@ -1,15 +1,13 @@
 package movie.manager.rest.resources;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jsonwebtoken.io.IOException;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.json.JsonObject;
-import javax.json.Json;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -20,14 +18,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import movie.manager.rest.auth.CookieGenerator;
 import movie.manager.rest.auth.CookieService;
+import movie.manager.rest.auth.JWTAuthentification;
 import movie.manager.rest.dao.UserDao;
 import movie.manager.rest.exception.GenericExceptionMapper;
 import movie.manager.rest.model.User;
@@ -42,14 +41,14 @@ public class UsersResource extends GenericExceptionMapper {
     UriInfo uriInfo;
     @Context
     Request request;
-    
+     
     // Return the list of users to the user in the browser
     @GET
     @Produces({MediaType.TEXT_XML})
     public Response getUsersBrowser(
-    		@Context HttpServletRequest servletRequest) {
+    		@Context HttpServletRequest servletRequest, @Context HttpHeaders headers) {
         
-    	User user = CookieService.getUserFromCookie(servletRequest);
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
     	if (user == null || user.getRole() != User.Role.STAFF) {
             // Pas les droits nécessaires
         	return Response.status(Response.Status.FORBIDDEN).build();
@@ -61,9 +60,8 @@ public class UsersResource extends GenericExceptionMapper {
     // Return the list of movies for applications
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response getUsers(@Context HttpServletRequest servletRequest) {
-
-    	User user = CookieService.getUserFromCookie(servletRequest);
+    public Response getUsers(@Context HttpServletRequest servletRequest, @Context HttpHeaders headers) {
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
     	if (user == null || user.getRole() != User.Role.STAFF) {
             // Pas les droits nécessaires
         	return Response.status(Response.Status.FORBIDDEN).build();
@@ -79,7 +77,7 @@ public class UsersResource extends GenericExceptionMapper {
             @FormParam("username") String username,
             @FormParam("password") String password,
             @FormParam("role") String role,
-            @Context HttpServletResponse servletResponse) throws IOException {
+            @Context HttpServletResponse servletResponse) throws IOException, Exception {
 
         if (UserDao.instance.userExists(username)) {
             throw new RuntimeException("Username already exists");
@@ -108,56 +106,51 @@ public class UsersResource extends GenericExceptionMapper {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response isLoginUser(
     		@Context HttpServletRequest servletRequest,
-            @Context HttpServletResponse servletResponse) throws IOException {
-    		
-        	User user = CookieService.getUserFromCookie(servletRequest);
-        	ObjectMapper objectMapper = new ObjectMapper();
-        	Map<String, Object> jsonResponse = new HashMap<>();
-            if (user == null || !user.isConnected()) {
-                // Pas connecté
-            	jsonResponse.put("connected", false);
-            } else {
-                // Connecté
-            	jsonResponse.put("connected", true);
-            	jsonResponse.put("username", user.getUsername());
-            }
-            String json = objectMapper.writeValueAsString(jsonResponse);
-            return Response.ok(json).build();
+            @Context HttpServletResponse servletResponse,
+            @Context HttpHeaders headers) throws IOException, Exception {
+			
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	Map<String, Object> jsonResponse = new HashMap<>();
+        if (user == null) {
+            // Pas connecté
+        	jsonResponse.put("connected", false);
+        } else {
+            // Connecté
+        	jsonResponse.put("connected", true);
+        	jsonResponse.put("username", user.getUsername());
+        }
+        String json = objectMapper.writeValueAsString(jsonResponse);
+        return Response.ok(json).build();
     }
     
     @POST
-    @Path("login")
-    @Produces(MediaType.TEXT_HTML)
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response loginUser(
-    		@FormParam("username") String username,
-            @FormParam("password") String password,
-            @Context HttpServletResponse servletResponse) throws IOException {
-        
-    	User user = UserDao.instance.getUser(username);
+    public Response loginUser2(
+    		@FormParam("username") String usernameParam,
+            @FormParam("password") String passwordParam,
+            @Context HttpServletRequest request) {
 
+        // Vérifier les informations d'identification de l'utilisateur
+        String username = usernameParam;
+        String password = passwordParam;
+        User user = UserDao.instance.getUser(username);
         if (user != null && user.getPassword().equals(password)) {
-            // Générez un cookie unique
-            String cookie = CookieGenerator.generateUniqueCookie();
-
-            // Stockez le cookie dans l'objet User
-            user.setCookie(cookie.toString());
-
-            // Enregistrez le cookie dans le navigateur de l'utilisateur
-            Cookie cookie_obj = new Cookie("movie.manager.Cookie", cookie.toString());
-            //servletResponse.addCookie(cookie_obj);
-            //NewCookie newCookie = new NewCookie("movie.manager.Cookie", cookie.toString());
-            NewCookie newCookie = new NewCookie("movie.manager.Cookie", cookie.toString(), "/", null, NewCookie.DEFAULT_VERSION, null, NewCookie.DEFAULT_MAX_AGE, null, false, true);
-            return Response.ok().cookie(newCookie).build();
-
-            // Redirigez l'utilisateur vers une page sécurisée
-            //return Response.ok().cookie(newCookie).build();
             
+        	String jwt = JWTAuthentification.createATokenForTheUser(user);
+
+            // Retourner le JWT dans la réponse
+            return Response.ok().entity(jwt).build();
         } else {
             // Gestion des erreurs de connexion
-    	    return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity("Invalid username or password").build();
         }
+        
     }
+    
+    
 
     @GET
     @Path("disconnect")
@@ -165,14 +158,18 @@ public class UsersResource extends GenericExceptionMapper {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void disconnectUser(
     		@Context HttpServletRequest servletRequest,
-            @Context HttpServletResponse servletResponse) throws IOException {
+            @Context HttpServletResponse servletResponse,
+            @Context HttpHeaders headers) throws IOException, java.io.IOException {
     		
-        	User user = CookieService.getUserFromCookie(servletRequest);
-            if (user != null && user.isConnected()) {
+    		User user = JWTAuthentification.getUserFromRequestHeader(headers);
+    		System.out.println(user);
+            if (user != null) {
                user.disconnect();
             }
             servletResponse.sendRedirect("/movie.manager/");
     }
+    
+    
     
     @Path("{user}")
     public UserResource getUser(@PathParam("user") String username) {

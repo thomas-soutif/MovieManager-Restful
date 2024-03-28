@@ -13,12 +13,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import movie.manager.rest.auth.CookieService;
+import movie.manager.rest.auth.JWTAuthentification;
 import movie.manager.rest.dao.MovieDao;
 import movie.manager.rest.exception.GenericExceptionMapper;
 import movie.manager.rest.model.Movie;
@@ -53,9 +54,10 @@ public class MoviesResource extends GenericExceptionMapper {
     @Path("canPostMovie")
     @Produces(MediaType.TEXT_HTML)
     public Response canPostMovie(
-    		@Context HttpServletRequest request) throws IOException {
+    		@Context HttpServletRequest request,
+    		@Context HttpHeaders headers) throws IOException {
     		
-    	User user = CookieService.getUserFromCookie(request);
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
     	// Vérification des droits de l'utilisateur
         if (user == null || (user.getRole() != User.Role.STAFF && user.getRole() != User.Role.PROVIDER)) {
             // Pas les droits nécessaires
@@ -65,7 +67,7 @@ public class MoviesResource extends GenericExceptionMapper {
     }
     @POST
     @Produces(MediaType.TEXT_HTML)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response newMovie(
                          @FormParam("title") String title,
                          @FormParam("duration") int duration,
@@ -78,12 +80,14 @@ public class MoviesResource extends GenericExceptionMapper {
                          @FormParam("screeningDays") String screeningDaysList,
                          @FormParam("screeningTime") String screeningTimeList,
                          @Context HttpServletRequest request,
-                         @Context HttpServletResponse servletResponse) throws IOException {
+                         @Context HttpServletResponse servletResponse,
+                         @Context HttpHeaders headers) throws IOException {
+    	System.out.println(title);
     	String[] actors = actorsList.split(",");
     	String[] screeningDays = screeningDaysList.split(",");
     	String[] screeningTimes = screeningTimeList.split(",");
     	
-    	User user = CookieService.getUserFromCookie(request);
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
     	
 		// Vérification des droits de l'utilisateur
         if (user == null || (user.getRole() != User.Role.STAFF && user.getRole() != User.Role.PROVIDER)) {

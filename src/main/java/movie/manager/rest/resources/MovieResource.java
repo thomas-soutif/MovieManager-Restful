@@ -8,13 +8,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBElement;
 
-import movie.manager.rest.auth.CookieService;
+import movie.manager.rest.auth.JWTAuthentification;
 import movie.manager.rest.dao.MovieDao;
 import movie.manager.rest.model.Movie;
 import movie.manager.rest.model.User;
@@ -61,9 +62,11 @@ public class MovieResource {
     }
     
     @DELETE
-    public Response deleteFilm(@Context HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public Response deleteFilm(@Context HttpServletRequest servletRequest, HttpServletResponse servletResponse, @Context HttpHeaders headers) {
     	
-    	User user = CookieService.getUserFromCookie(servletRequest);
+    	
+    	User user = JWTAuthentification.getUserFromRequestHeader(headers);
+
     	
 		// Vérification des droits de l'utilisateur
         if (user == null || user.getRole() != User.Role.STAFF) {

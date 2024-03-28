@@ -108,7 +108,13 @@
     // Fonction pour récupérer les utilisateurs depuis l'API
     async function getUsers() {
         try {
-            const response = await fetch('/movie.manager/rest/users');
+        	const jwt = localStorage.getItem('jwt');
+        	let headers = {"Content-Type": "application/x-www-form-urlencoded"};
+        	if (jwt) {
+            	// Inclure le JWT dans l'en-tête Authorization
+            	headers.Authorization = `Bearer ${jwt}`;
+        	}
+            const response = await fetch('/movie.manager/rest/users',{ method: "GET", headers: headers});
             const data = await response.text();
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(data, 'text/xml');
@@ -184,8 +190,15 @@
 
     async function deleteMovie(title) {
         try {
+        	const jwt = localStorage.getItem('jwt');
+        	let headers = {};
+        	if (jwt) {
+            	// Inclure le JWT dans l'en-tête Authorization
+            	headers.Authorization = `Bearer ${jwt}`;
+        	}
             const response = await fetch(`/movie.manager/rest/movies/${encodeURIComponent(title)}/`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: headers,
             });
             if (response.ok) {
                 alert(`Film "${title}" supprimé avec succès.`);

@@ -148,8 +148,17 @@
 
 <script>
         // Fonction pour vérifier l'autorisation d'ajouter un film
+        const jwt = localStorage.getItem('jwt');
+		let headers = {"Content-Type": "application/x-www-form-urlencoded"};
+		if (jwt) {
+	    	// Inclure le JWT dans l'en-tête Authorization
+	    	headers.Authorization = `Bearer ${jwt}`;
+		}
         function checkPermission() {
-            fetch("../movie.manager/rest/movies/canPostMovie")
+            fetch("../movie.manager/rest/movies/canPostMovie",{
+        		method:"GET",
+        		headers: headers
+        	})
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Vous n'avez pas les droits nécessaires pour accéder à cette page.");

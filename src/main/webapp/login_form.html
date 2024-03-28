@@ -125,11 +125,17 @@
         })
         .then(response => {
             if (response.ok) {
-                window.location.href = "../movie.manager/"; // Redirection vers la page d'accueil en cas de succès
-                // Récupérer tous les cookies 
+            	// Récupére le JWT token
+                return response.text();
+                
             } else {
                 throw new Error("Identifiants invalides");
             }
+        })
+        .then(jwt => {
+        	console.log(jwt)
+        	localStorage.setItem('jwt',jwt);
+        	window.location.href = "../movie.manager/"; // Redirection vers la page d'accueil en cas de succès
         })
         .catch(error => {
             document.getElementById("error").innerText = error.message;
