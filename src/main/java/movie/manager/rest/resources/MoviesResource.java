@@ -67,7 +67,7 @@ public class MoviesResource extends GenericExceptionMapper {
     }
     @POST
     @Produces(MediaType.TEXT_HTML)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response newMovie(
                          @FormParam("title") String title,
                          @FormParam("duration") int duration,
